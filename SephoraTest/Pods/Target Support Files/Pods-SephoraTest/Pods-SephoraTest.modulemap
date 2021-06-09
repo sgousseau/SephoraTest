@@ -1,0 +1,6 @@
+framework module Pods_SephoraTest {
+  umbrella header "Pods-SephoraTest-umbrella.h"
+
+  export *
+  module * { export * }
+}
