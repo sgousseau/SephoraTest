@@ -10,23 +10,30 @@ import XCTest
 
 class SephoraTestTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    func testSetGet() throws {
+        let cache = CacheService.local
+        let data = "Hello from tests".data(using: .utf8)
+        let url = URL(string: "/tests")!
+        let set_expect = XCTestExpectation()
+        let get_expect = XCTestExpectation()
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+        cache.set(url, data) { success, error in
+            if success {
+                set_expect.fulfill()
+            } else {
+                set_expect.isInverted = true
+                set_expect.fulfill()
+            }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+            cache.get(url) { data, error in
+                if let data = data {
+                    XCTAssert(String(data: data, encoding: .utf8) == "Hello from tests")
+                    get_expect.fulfill()
+                } else {
+                    get_expect.isInverted = true
+                    get_expect.fulfill()
+                }
+            }
         }
     }
 
